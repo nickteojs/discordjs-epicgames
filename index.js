@@ -78,7 +78,7 @@ client.once('ready', () => {
     // 799976578502230019
     // 989362472488144896
     const textChannel = client.channels.cache.find(channel => channel.id === "989362472488144896")
-    let scheduleFetch = new cron.CronJob('19 15 * * 4', () => {
+    let scheduleFetch = new cron.CronJob('29 15 * * 4', () => {
         textChannel.send("Test")
         getGames().then(() => {
             gameList.forEach(game => {
@@ -97,6 +97,7 @@ client.once('ready', () => {
                 textChannel.send({ embeds: [gameEmbed] });
             })
         }).catch((error) => {
+            console.log(error)
             const errorCode = error.response.status
             const errorMessage = error.response.statusText
             textChannel.send(`Error Code: ${errorCode}, ${errorMessage}`)
