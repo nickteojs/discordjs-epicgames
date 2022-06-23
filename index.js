@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Client, Intents, MessageEmbed } from "discord.js";
-import token from './config.js'
+// import token from './config.js'
 import cron from 'cron'
 
 // Games that are CURRENTLY free have discountPrice: 0
