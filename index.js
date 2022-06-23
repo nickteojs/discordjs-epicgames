@@ -78,7 +78,7 @@ client.once('ready', () => {
     // 799976578502230019
     // 989362472488144896
     const textChannel = client.channels.cache.find(channel => channel.id === "989362472488144896")
-    let scheduleFetch = new cron.CronJob('31 15 * * 4', () => {
+    let scheduleFetch = new cron.CronJob('02 15 * * 4', () => {
         getGames().then(() => {
             gameList.forEach(game => {
                 console.log(game)
