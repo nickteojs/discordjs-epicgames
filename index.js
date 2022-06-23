@@ -79,7 +79,7 @@ client.once('ready', () => {
     // 989362472488144896
     // 05 23 * * 4
     const textChannel = client.channels.cache.find(channel => channel.id === "799976578502230019")
-    let scheduleFetch = new cron.CronJob('55 22 * * 4', () => {
+    let scheduleFetch = new cron.CronJob('59 14 * * 4', () => {
         textChannel.send("Test time zone")
         getGames().then(() => {
             gameList.forEach(game => {
