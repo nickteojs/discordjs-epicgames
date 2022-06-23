@@ -72,9 +72,11 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
-    const guild = client.guilds.cache.get(token.guildId)
-    const channel = guild.channels.cache
-    const textChannel = channel.find(channel => channel.type === "GUILD_TEXT")
+    // const guild = client.guilds.cache.get(token.guildId)
+    // const channel = guild.channels.cache
+    // const textChannel = channel.find(channel => channel.type === "GUILD_TEXT")
+    const eboChannel = client.channels.cache.find(channel => channel.id === "989362472488144896")
+    eboChannel.send("Test")
     // let scheduleFetch = new cron.CronJob('05 23 * * 4', () => {
         getGames().then(() => {
             gameList.forEach(game => {
@@ -89,19 +91,19 @@ client.once('ready', () => {
                     .setDescription(description)
                     .addFields({ name: 'Valid from', value: `${dayNumber} ${month} to ${endDate}` })
                     .setImage(keyImages[0].url)
-                textChannel.send({ embeds: [gameEmbed] });
+                // textChannel.send({ embeds: [gameEmbed] });
             })
         }).catch((error) => {
             const errorCode = error.response.status
             const errorMessage = error.response.statusText
-            textChannel.send(`Error Code: ${errorCode}, ${errorMessage}`)
+            // textChannel.send(`Error Code: ${errorCode}, ${errorMessage}`)
         })
        
     // })
     // scheduleFetch.start()
 });
 
-client.login(token.token);
+client.login(process.env.token);
 
 
 
