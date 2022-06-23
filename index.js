@@ -77,10 +77,11 @@ client.once('ready', () => {
     // const textChannel = channel.find(channel => channel.type === "GUILD_TEXT")
     // 799976578502230019
     // 989362472488144896
-    const textChannel = client.channels.cache.find(channel => channel.id === "989362472488144896")
-    let scheduleFetch = new cron.CronJob('05 15 * * 4', () => {
+    const textChannel = client.channels.cache.find(channel => channel.id === "799976578502230019")
+    let scheduleFetch = new cron.CronJob('08 15 * * 4', () => {
         getGames().then(() => {
             gameList.forEach(game => {
+                console.log(game)
                 // Destructuring keys from each game object
                 const {title, description, keyImages} = game
                 const productSlug = getUrl(game)
