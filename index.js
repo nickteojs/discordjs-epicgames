@@ -84,7 +84,7 @@ client.once('ready', () => {
                 // Destructuring keys from each game object
                 const {title, description, keyImages} = game
                 const productSlug = getUrl(game)
-                const endDate = calcEndDate('Jun', '30')
+                const endDate = calcEndDate(month, dayNumber)
                 const gameEmbed = new MessageEmbed()
                     .setAuthor({ name: 'Free Game(s) this week'})
                     .setTitle(title)
