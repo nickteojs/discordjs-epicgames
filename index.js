@@ -13,9 +13,6 @@ const gameList = []
 const longMonths = ['Jan', 'Mar', "May", "Jul", "Aug", "Oct", "Dec"]
 const restMonths = ['Apr', 'Jun', 'Sep', 'Nov']
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-const currentDate = Date()
-const [date, time] = currentDate.split("2022")
-const [day, month, dayNumber] = date.split(" ")
 
 const getGames = async () => {
     const response = await axios.get(API_ENDPOINT)
@@ -46,21 +43,21 @@ const calcEndDate = (month, dayNumber) => {
     if (longMonths.includes(month)) {
         const days = 31
         if (total > days) {
-            calcOverflowDays(total, days, month)
+            return calcOverflowDays(total, days, month)
         } else {
             return `${+dayNumber + 7} ${month}`
         }
     } else if (restMonths.includes(month)) {
         const days = 30
         if (total > days) {
-            calcOverflowDays(total, days, month)
+            return calcOverflowDays(total, days, month)
         } else {
             return `${+dayNumber + 7} ${month}`
         }
     } else if (month === "Feb") {
         const days = 28
         if (total > days) {
-            calcOverflowDays(total, days, month)
+            return calcOverflowDays(total, days, month)
         } else {
             return `${+dayNumber + 7} ${month}`
         }
@@ -79,13 +76,15 @@ client.once('ready', () => {
     // 989362472488144896
     const textChannel = client.channels.cache.find(channel => channel.id === "989362472488144896")
     let scheduleFetch = new cron.CronJob('02 15 * * 4', () => {
+        const currentDate = Date()
+        const [date, time] = currentDate.split("2022")
+        const [day, month, dayNumber] = date.split(" ")
         getGames().then(() => {
             gameList.forEach(game => {
-                console.log(game)
                 // Destructuring keys from each game object
                 const {title, description, keyImages} = game
                 const productSlug = getUrl(game)
-                const endDate = calcEndDate(month, dayNumber)
+                const endDate = calcEndDate('Jun', '30')
                 const gameEmbed = new MessageEmbed()
                     .setAuthor({ name: 'Free Game(s) this week'})
                     .setTitle(title)
