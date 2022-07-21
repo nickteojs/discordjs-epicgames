@@ -1,6 +1,11 @@
 # Discord Bot - Epic Games
 
-This is a discord bot that fetches free games from the Epic Store every week on release. It uses Cron to schedule the fetch job, and axios to fetch the list of games from Epic.
+This is a discord bot that fetches free games from the Epic Store every week on release. 
+It uses Cron to schedule the fetch job, and axios to fetch the list of games from Epic.
+
+The channel that you create for the bot HAS to be named #free-games.
+
+![Epic Games Discord Bot](https://i.imgur.com/uKw9G5F.jpeg)
 
 ## Installation
 
