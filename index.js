@@ -7,7 +7,6 @@ import cron from 'cron'
 // Games that UPCOMING have discountPrice same as originalPrice
 // Games that are NO LONGER free have isCodeRedemptionOnly = true
 // Release time: 11PM (23:00) every Thursday (GMT + 8) OR 8AM Thursday (PT)
-// && game.price.totalPrice.discountPrice === 0)
 const API_ENDPOINT = 'https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions?country=SG'
 const gameList = []
 const longMonths = ['Jan', 'Mar', "May", "Jul", "Aug", "Oct", "Dec"]
@@ -17,7 +16,7 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 const getGames = async () => {
     const response = await axios.get(API_ENDPOINT)
     const gamesList = response.data.data.Catalog.searchStore.elements;
-    const activeGames = gamesList.filter(game => game.isCodeRedemptionOnly === false && game.price.totalPrice.discountPrice === 0) 
+    const activeGames = gamesList.filter(game => game.isCodeRedemptionOnly === false && game.price.totalPrice.discountPrice === 0 && game.price.totalPrice.originalPrice !== 0) 
     activeGames.forEach(game => {
         gameList.push(game)
     })
@@ -69,12 +68,7 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
-    // const guild = client.guilds.cache.get(token.guildId)
-    // const channel = guild.channels.cache
-    // const textChannel = channel.find(channel => channel.type === "GUILD_TEXT")
-    // 799976578502230019
-    // 989362472488144896
-    const textChannel = client.channels.cache.find(channel => channel.id === "989362472488144896")
+    const channels = client.channels.cache.filter(channel => channel.name === 'free-games')
     let scheduleFetch = new cron.CronJob('02 15 * * 4', () => {
         const currentDate = Date()
         const [date, time] = currentDate.split("2022")
@@ -82,7 +76,13 @@ client.once('ready', () => {
         getGames().then(() => {
             gameList.forEach(game => {
                 // Destructuring keys from each game object
-                const {title, description, keyImages} = game
+                const {title, description, keyImages, price} = game
+                const originalPrice = price.totalPrice.fmtPrice.originalPrice
+                let imageUrl = keyImages[0].url
+                // If game thumbnail URL is improperly formatted
+                if (imageUrl.slice(-3) !== "jpg" && imageUrl.slice(-3) !== "png") {
+                    imageUrl = ""
+                }
                 const productSlug = getUrl(game)
                 const endDate = calcEndDate(month, dayNumber)
                 const gameEmbed = new MessageEmbed()
@@ -90,20 +90,24 @@ client.once('ready', () => {
                     .setTitle(title)
                     .setURL(`https://store.epicgames.com/en-US/p/${productSlug}`)
                     .setDescription(description)
-                    .addFields({ name: 'Valid from', value: `${dayNumber} ${month} to ${endDate}` })
-                    .setImage(keyImages[0].url)
-                textChannel.send({ embeds: [gameEmbed] });
+                    .addFields(
+                        { name: 'Valid from', value: `${dayNumber} ${month} to ${endDate}` }, 
+                        { name: 'Original Price:', value: originalPrice }
+                        )
+                    .setImage(imageUrl)
+                    channels.forEach(channel => channel.send({ embeds: [gameEmbed]}))
             })
         }).catch((error) => {
             console.log(error)
             const errorCode = error.response.status
             const errorMessage = error.response.statusText
-            textChannel.send(`Error Code: ${errorCode}, ${errorMessage}`)
+            channels.forEach(channel => channel.send(`Error Code: ${errorCode}, ${errorMessage}`))
         })
     })
     scheduleFetch.start()
 });
 
+// client.login(token.token)
 client.login(process.env.token);
 
 
