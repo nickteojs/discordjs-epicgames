@@ -69,6 +69,7 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
     const channels = client.channels.cache.filter(channel => channel.name === 'free-games')
+    // const devChannel = client.channels.cache.find(channel => channel.id === "999601814007717928")
     let scheduleFetch = new cron.CronJob('02 15 * * 4', () => {
         const currentDate = Date()
         const [date, time] = currentDate.split("2022")
@@ -80,9 +81,9 @@ client.once('ready', () => {
                 const originalPrice = price.totalPrice.fmtPrice.originalPrice
                 let imageUrl = keyImages[0].url
                 // If game thumbnail URL is improperly formatted
-                if (imageUrl.slice(-3) !== "jpg" && imageUrl.slice(-3) !== "png") {
-                    imageUrl = ""
-                }
+                // if (imageUrl.slice(-3) !== "jpg" && imageUrl.slice(-3) !== "png") {
+                //     imageUrl = ""
+                // }
                 const productSlug = getUrl(game)
                 const endDate = calcEndDate(month, dayNumber)
                 const gameEmbed = new MessageEmbed()
@@ -96,6 +97,7 @@ client.once('ready', () => {
                         )
                     .setImage(imageUrl)
                     channels.forEach(channel => channel.send({ embeds: [gameEmbed]}))
+                    // devChannel.send({ embeds: [gameEmbed]})
             })
         }).catch((error) => {
             console.log(error)
